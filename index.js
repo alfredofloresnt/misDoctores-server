@@ -17,7 +17,11 @@ connection.connect(function(err) {
     console.log("Connectado a BD!");
 });
 
+
 // Iniciar Servidor
+app.use(bodyParser.json())
+app.use('/', require('./Routes/routes'));
+
 app.listen(port, function(){
     console.log('Servidor corriendo: ' + port);
 })
