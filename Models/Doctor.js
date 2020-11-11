@@ -4,19 +4,20 @@ const mysql = require('mysql');
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "Root!@#$",
+  password: "root",
   database: "misdoctoresdb"
 });
 
 
 exports.createDoctor = (data, callback) => {
-  let doctor = [connection.escape(data.firstname), connection.escape(data.lastname), data.idHospital, data.idSpecialty]
   let sql = "INSERT INTO doctor (firstName, lastname, idHospital, idSpecialty) VALUES (" + connection.escape(data.firstname) + "," + connection.escape(data.lastname) + "," + data.idHospital + "," + data.idSpecialty + ")";
-  connection.query(sql, doctor, function (err, result) {
+  connection.query(sql, function (err, result) {
     if (err) throw err;
     callback(true);
   })
 }
+
+
 
 exports.getDoctorInfo = (idDoctor, callback) => {
   let sql = "SELECT d.firstname, d.lastname, s.name, h.name, h.city, h.state, score.average FROM doctor d JOIN specialty s ON d.idSpecialty = s.idSpecialty JOIN hospital h ON d.idHospital = h.idHospital LEFT JOIN (SELECT c.idDoctor, AVG(c.score) AS average FROM comment c GROUP BY c.idDoctor) AS score ON d.idDoctor = score.idDoctor WHERE d.idDoctor = " + idDoctor;

@@ -45,9 +45,15 @@ app.get("/search/:type", function (req, res) {
 
 app.post("/doctor/create", function (req, res) {
   let doctor = req.body.doctor;
-  docModel.createDoctor(doctor, function (data) {
-    res.json({ doctor: data });
-  });
+  hospitalModel.checkHospital(doctor.hospital, function(idHospital) {
+    specialtyModel.checkSpecialty(doctor.specialty, function(idSpecialty) {
+      doctor.idHospital = idHospital;
+      doctor.idSpecialty = idSpecialty;
+      docModel.createDoctor(doctor, function (data) {
+        res.json({ doctor: data });
+      })
+    });
+  })
 })
 
 app.get("/doctor/info", function (req, res) {
