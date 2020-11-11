@@ -4,7 +4,7 @@ const mysql = require('mysql');
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "root",
+  password: "Root!@#$",
   database: "misdoctoresdb"
 });
 
@@ -65,5 +65,13 @@ exports.getSearchSpecialty = (specialty, callback) => {
   connection.query(sql, function (error, results, fields) {
     if (error) throw error;
     callback(results)
+  })
+}
+
+exports.createComment = (data, callback) => {
+  let sql = "INSERT INTO comment (name, comment, score, idDoctor) VALUES (" + connection.escape(data.name) + ", " + connection.escape(data.comment) + ", " + data.score + ", " + data.idDoctor + ")";
+  connection.query(sql, function (err, result) {
+    if (err) throw err;
+    callback(true);
   })
 }
