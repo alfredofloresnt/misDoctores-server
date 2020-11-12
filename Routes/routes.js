@@ -3,6 +3,8 @@ var app = express();
 var docModel = require('../Models/Doctor')
 var specialtyModel = require('../Models/Specialty')
 var hospitalModel = require('../Models/Hospital')
+var adminModel = require('../Models/Admin')
+var jwt = require('jsonwebtoken');
 
 app.get("/", function (req, res) {
   res.send("<h1>API para Mis Doctores</h1>")
@@ -69,6 +71,44 @@ app.get("/doctor/info", function (req, res) {
 
   });
 })
+
+app.post("/login", function (req, res) {
+  let username = req.body.username;
+  let password = req.body.password;
+  adminModel.login(username, password, function (data) {
+    if (data){
+      var token = jwt.sign({ idUser: data.idUser }, 'misDoctores');
+      res.json({admin: token})
+    } else {
+      res.status(400)
+      res.send('Bad Password');
+    }  
+  });
+})
+
+app.post("/password/create", verifyUser, function (req, res) {
+  let password = req.body.password
+  adminModel.generatePassword(password, function(data) {
+    res.json({password: data})
+  })
+})
+
+
+function verifyUser (req, res, next) {
+  let accessToken = req.header('authorization');
+  jwt.verify(accessToken, 'misDoctores', function(err, decoded) {
+    if (!err){
+      console.log(decoded)
+      req.body.idUser = decoded.idUser
+      next();
+    } else {
+      res.status(403)
+      res.send("Invalid session")
+    }
+
+  });
+  
+}
 
 app.post("/comment/create", function (req, res) {
   let comment = req.body.comment;
