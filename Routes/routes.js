@@ -117,4 +117,13 @@ app.post("/comment/create", function (req, res) {
   })
 })
 
+app.post("/doctor/delete", function (req, res) {
+  let doctor = req.body.idDoctor;
+  docModel.deleteComment(doctor, function (data) {
+      docModel.deleteDoctor(doctor, function (data) {
+        res.json({ comment: data })
+      })
+  })
+})
+
 module.exports = app;

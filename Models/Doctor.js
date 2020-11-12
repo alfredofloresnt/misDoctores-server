@@ -75,3 +75,19 @@ exports.createComment = (data, callback) => {
     callback(true);
   })
 }
+
+exports.deleteComment = (doctor, callback) => {
+  let sql = "DELETE FROM comment c WHERE c.idDoctor = " + doctor;
+  connection.query(sql, function (err, result) {
+    if (err) throw err;
+    callback(true);
+  })
+}
+
+exports.deleteDoctor = (doctor, callback) => {
+  let sql = "DELETE FROM doctor d WHERE d.idDoctor = " + doctor;
+  connection.query(sql, function (err, result) {
+    if (err) throw err;
+    callback(true);
+  })
+}
