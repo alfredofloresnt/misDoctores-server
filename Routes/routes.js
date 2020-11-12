@@ -110,4 +110,11 @@ function verifyUser (req, res, next) {
   
 }
 
+app.post("/comment/create", function (req, res) {
+  let comment = req.body.comment;
+  docModel.createComment(comment, function (data) {
+    res.json({ comment: data })
+  })
+})
+
 module.exports = app;
