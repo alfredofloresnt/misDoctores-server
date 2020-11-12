@@ -17,14 +17,17 @@ exports.decryptPassword = (username, password, callback) => {
 }
 
 exports.login = (username, password, callback) => {
-    let sql = "SELECT password FROM user WHERE username = " + connection.escape(username);
-    connection.query(sql, function(err, result){
+    let sql = "SELECT password, idUser FROM user WHERE username = " + connection.escape(username);
+    connection.query(sql, function(err, user){
         if (err) throw err
-        console.log(result)
-        if (result.length > 0){
-            bcrypt.compare(password, result[0].password, function(err, result) {
-
-                callback(result)
+        console.log(user)
+        if (user.length > 0){
+            bcrypt.compare(password, user[0].password, function(err, result) {
+                if (result) {
+                    callback(user)
+                } else {
+                    callback(false)
+                }
             });
         } else {
             callback(false)
