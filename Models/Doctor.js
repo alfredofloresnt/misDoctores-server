@@ -53,7 +53,7 @@ exports.getSearchHospital = (hospital, callback) => {
 }
 
 exports.getSearchDoctor = (doctor, callback) => {
-  var sql = "SELECT d.idDoctor, d.firstName, d.lastName, h.name AS hospital, s.name AS specialty, score.average FROM doctor d JOIN hospital h ON d.idHospital = h.idHospital JOIN specialty s ON d.idSpecialty = s.idSpecialty LEFT JOIN (SELECT c.idDoctor, AVG(c.score) AS average FROM comment c GROUP BY c.idDoctor) AS score ON d.idDoctor = score.idDoctor WHERE d.firstName LIKE '" + doctor + "%' OR d.lastName LIKE '" + doctor + "%'"
+  var sql = "SELECT d.idDoctor, d.firstName, d.lastName, h.name AS hospital, s.name AS specialty, score.average FROM doctor d JOIN hospital h ON d.idHospital = h.idHospital JOIN specialty s ON d.idSpecialty = s.idSpecialty LEFT JOIN (SELECT c.idDoctor, AVG(c.score) AS average FROM comment c GROUP BY c.idDoctor) AS score ON d.idDoctor = score.idDoctor WHERE concat(d.firstName, ' ', d.lastName) LIKE '%" + doctor + "%'"
   connection.query(sql, function (error, results, fields) {
     if (error) throw error;
     callback(results)
