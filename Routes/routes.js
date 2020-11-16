@@ -76,6 +76,7 @@ app.post("/login", function (req, res) {
   let username = req.body.username;
   let password = req.body.password;
   adminModel.login(username, password, function (data) {
+    console.log("data login:", data)
     if (data){
       var token = jwt.sign({ idUser: data.idUser }, 'misDoctores');
       res.json({admin: token})
@@ -86,7 +87,7 @@ app.post("/login", function (req, res) {
   });
 })
 
-app.post("/password/create", verifyUser, function (req, res) {
+app.post("/password/create", function (req, res) {
   let password = req.body.password
   adminModel.generatePassword(password, function(data) {
     res.json({password: data})
@@ -96,6 +97,7 @@ app.post("/password/create", verifyUser, function (req, res) {
 
 function verifyUser (req, res, next) {
   let accessToken = req.header('authorization');
+  console.log(accessToken);
   jwt.verify(accessToken, 'misDoctores', function(err, decoded) {
     if (!err){
       console.log(decoded)
@@ -123,6 +125,24 @@ app.post("/doctor/delete", function (req, res) {
       docModel.deleteDoctor(doctor, function (data) {
         res.json({ comment: data })
       })
+  })
+})
+
+app.get("/overview", verifyUser, function (req, res) {
+  let idAdmin = req.body.idUser
+  let overview = { doctors: null, hospitals: null, comments: null, avgScore: null }
+  docModel.countDoctors(idAdmin, function(data) {
+    overview.doctors = data
+    docModel.countComments(idAdmin, function(data) {
+      overview.comments = data
+      docModel.avgScoreComments(idAdmin, function (data) {
+        overview.avgScore = data
+        hospitalModel.countHospitals(idAdmin, function (data) {
+          overview.hospitals = data
+          res.json({ overview: overview })
+        })
+      }) 
+    })
   })
 })
 

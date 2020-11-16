@@ -3,7 +3,7 @@ const mysql = require('mysql');
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "root",
+  password: "Root!@#$",
   database: "misdoctoresdb"
 });
 
@@ -28,5 +28,13 @@ exports.checkHospital = (hospital, callback) => {
         callback(result.insertId)
       })
     }
+  })
+}
+
+exports.countHospitals = (idAdmin, callback) => {
+  let sql = "SELECT COUNT(h.idHospital) AS hospitales FROM hospital h, user u WHERE u.idUser = " + idAdmin;
+  connection.query(sql, function (err, result) {
+    if (err) throw err;
+    callback(result[0].hospitales);
   })
 }

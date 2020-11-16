@@ -16,7 +16,7 @@ var allowCrossDomain = function(req, res, next) {
 const connection = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "root"
+    password: "Root!@#$"
   });
 
 connection.connect(function(err) {

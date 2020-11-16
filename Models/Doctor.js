@@ -4,7 +4,7 @@ const mysql = require('mysql');
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "root",
+  password: "Root!@#$",
   database: "misdoctoresdb"
 });
 
@@ -89,5 +89,29 @@ exports.deleteDoctor = (doctor, callback) => {
   connection.query(sql, function (err, result) {
     if (err) throw err;
     callback(true);
+  })
+}
+
+exports.countDoctors = (idAdmin, callback) => {
+  let sql = "SELECT COUNT(d.idDoctor) AS doctores FROM doctor d, user u WHERE u.idUser = " + idAdmin;
+  connection.query(sql, function (err, result) {
+    if (err) throw err;
+    callback(result[0].doctores);
+  })
+}
+
+exports.countComments = (idAdmin, callback) => {
+  let sql = "SELECT COUNT(c.idComment) AS comentarios FROM comment c, user u WHERE u.idUser = " + idAdmin;
+  connection.query(sql, function (err, result) {
+    if (err) throw err;
+    callback(result[0].comentarios);
+  })
+}
+
+exports.avgScoreComments = (idAdmin, callback) => {
+  let sql = "SELECT AVG(c.score) AS 'promedio total' FROM comment c, user u WHERE u.idUser = " + idAdmin;
+  connection.query(sql, function (err, result) {
+    if (err) throw err;
+    callback(result[0]["promedio total"]);
   })
 }
