@@ -78,7 +78,7 @@ app.post("/login", function (req, res) {
   adminModel.login(username, password, function (data) {
     console.log("data login:", data)
     if (data){
-      var token = jwt.sign({ idUser: data.idUser }, 'misDoctores');
+      var token = jwt.sign({ idUser: data[0].idUser }, 'misDoctores');
       res.json({admin: token})
     } else {
       res.status(400)
@@ -97,6 +97,8 @@ app.post("/password/create", function (req, res) {
 
 function verifyUser (req, res, next) {
   let accessToken = req.header('authorization');
+  var decoded = jwt.decode(accessToken, {complete: true});
+  console.log("decoded: ", decoded)
   console.log(accessToken);
   jwt.verify(accessToken, 'misDoctores', function(err, decoded) {
     if (!err){
