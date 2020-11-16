@@ -10,6 +10,7 @@ const connection = mysql.createConnection({
 
 
 exports.createDoctor = (data, callback) => {
+  console.log("========", data)
   let sql = "INSERT INTO doctor (firstName, lastname, idHospital, idSpecialty) VALUES (" + connection.escape(data.firstname) + "," + connection.escape(data.lastname) + "," + data.idHospital + "," + data.idSpecialty + ")";
   connection.query(sql, function (err, result) {
     if (err) throw err;
@@ -20,10 +21,10 @@ exports.createDoctor = (data, callback) => {
 
 
 exports.getDoctorInfo = (idDoctor, callback) => {
-  let sql = "SELECT d.firstname, d.lastname, s.name, h.name, h.city, h.state, score.average FROM doctor d JOIN specialty s ON d.idSpecialty = s.idSpecialty JOIN hospital h ON d.idHospital = h.idHospital LEFT JOIN (SELECT c.idDoctor, AVG(c.score) AS average FROM comment c GROUP BY c.idDoctor) AS score ON d.idDoctor = score.idDoctor WHERE d.idDoctor = " + idDoctor;
+  let sql = "SELECT d.firstname, d.lastname, s.name as specialty, h.name as hospital, h.city, h.state, score.average FROM doctor d JOIN specialty s ON d.idSpecialty = s.idSpecialty JOIN hospital h ON d.idHospital = h.idHospital LEFT JOIN (SELECT c.idDoctor, AVG(c.score) AS average FROM comment c GROUP BY c.idDoctor) AS score ON d.idDoctor = score.idDoctor WHERE d.idDoctor = " + idDoctor;
   connection.query(sql, function (err, result) {
     if (err) throw err;
-    callback(result);
+    callback(result[0]);
   })
 }
 
@@ -77,7 +78,7 @@ exports.createComment = (data, callback) => {
 }
 
 exports.deleteComment = (doctor, callback) => {
-  let sql = "DELETE FROM comment c WHERE c.idDoctor = " + doctor;
+  let sql = "DELETE FROM comment WHERE idDoctor = " + doctor;
   connection.query(sql, function (err, result) {
     if (err) throw err;
     callback(true);
@@ -85,7 +86,7 @@ exports.deleteComment = (doctor, callback) => {
 }
 
 exports.deleteDoctor = (doctor, callback) => {
-  let sql = "DELETE FROM doctor d WHERE d.idDoctor = " + doctor;
+  let sql = "DELETE FROM doctor WHERE idDoctor = " + doctor;
   connection.query(sql, function (err, result) {
     if (err) throw err;
     callback(true);

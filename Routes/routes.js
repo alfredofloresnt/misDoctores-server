@@ -47,6 +47,7 @@ app.get("/search/:type", function (req, res) {
 
 app.post("/doctor/create", function (req, res) {
   let doctor = req.body.doctor;
+  console.log(doctor)
   hospitalModel.checkHospital(doctor.hospital, function(idHospital) {
     specialtyModel.checkSpecialty(doctor.specialty, function(idSpecialty) {
       doctor.idHospital = idHospital;
@@ -75,6 +76,7 @@ app.get("/doctor/info", function (req, res) {
 app.post("/login", function (req, res) {
   let username = req.body.username;
   let password = req.body.password;
+  console.log(username, password)
   adminModel.login(username, password, function (data) {
     console.log("data login:", data)
     if (data){
