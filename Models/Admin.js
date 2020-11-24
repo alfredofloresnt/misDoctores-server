@@ -3,12 +3,11 @@ const bcrypt = require('bcrypt');
 
 // Connectar a BD
 const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "Root!@#$",
-  database: "misdoctoresdb"
-});
-
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "misdoctoresdb"
+  });
 
 
 exports.decryptPassword = (username, password, callback) => {
