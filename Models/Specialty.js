@@ -16,10 +16,10 @@ exports.getSpecialty = (specialty, callback) => {
 }
 
 exports.checkSpecialty = (specialty, callback) => {
-  let sql = "SELECT s.idSpecialty, count(s.name) as total FROM specialty s WHERE s.name = " + connection.escape(specialty)
+  let sql = "SELECT s.idSpecialty, count(s.name) as total FROM specialty s WHERE s.name = " + connection.escape(specialty) + " GROUP BY s.idSpecialty"
   connection.query(sql, function (err, result) {
     if (err) throw err;
-    if (result[0].total > 0) {
+    if (result[0] != undefined) {
       callback(result[0].idSpecialty);
     } else {
       sql = "INSERT INTO specialty (name) VALUES (" + connection.escape(specialty) + ")";
